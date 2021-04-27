@@ -1,7 +1,7 @@
 import React from 'react'
 import { ImageBackground, StyleSheet, Text, View } from 'react-native'
 import { ILGetStarted, ILLogo } from '../../assets'
-import { Button } from '../../components'
+import { Button, Gap } from '../../components'
 
 const GetStarted = ({navigation}) => {
     return (
@@ -12,7 +12,7 @@ const GetStarted = ({navigation}) => {
             </View>
             <View>
                 <Button title="Get Started" onPress={() => navigation.navigate('Register')} />
-                <View style={{height: 16}} />
+                <Gap height={16} />
                 <Button type="secondary" title="Sign In" onPress={() => navigation.replace('Login')} />
             </View>
         </ImageBackground>

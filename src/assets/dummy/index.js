@@ -6,5 +6,18 @@ import DummyNews1 from './news1.png';
 import DummyNews2 from './news2.png';
 import DummyNews3 from './news3.png';
 import DummyHospital from './dummyHospital.png';
+import DummyHospital2 from './dummyHospital2.png';
+import DummyHospital3 from './dummyHospital3.png';
 
-export { DummyUser, DummyDoctor1, DummyDoctor2, DummyDoctor3, DummyNews1, DummyNews2, DummyNews3, DummyHospital };
+export {
+    DummyUser,
+    DummyDoctor1,
+    DummyDoctor2,
+    DummyDoctor3,
+    DummyNews1,
+    DummyNews2,
+    DummyNews3,
+    DummyHospital,
+    DummyHospital2,
+    DummyHospital3
+};

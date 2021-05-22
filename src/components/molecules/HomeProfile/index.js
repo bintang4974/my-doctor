@@ -1,17 +1,17 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { DummyUser } from '../../../assets';
 import { colors, fonts } from '../../../utils';
 
-const index = () => {
+const index = ({ onPress }) => {
     return (
-        <View style={styles.container}>
+        <TouchableOpacity style={styles.container} onPress={onPress}>
             <Image source={DummyUser} style={styles.avatar} />
             <View>
                 <Text style={styles.name}>Bintang Ramadhan</Text>
                 <Text style={styles.profession}>Mobile Developer</Text>
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 

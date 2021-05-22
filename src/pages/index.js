@@ -8,5 +8,20 @@ import Messages from './Messages';
 import Hospitals from './Hospitals';
 import ChooseDoctor from './ChooseDoctor';
 import Chatting from './Chatting';
+import UserProfile from './UserProfile';
+import UpdateProfile from './UpdateProfile';
 
-export { Splash, GetStarted, Register, Login, UploadPhoto, Doctor, Messages, Hospitals, ChooseDoctor, Chatting };
+export {
+    Splash,
+    GetStarted,
+    Register,
+    Login,
+    UploadPhoto,
+    Doctor,
+    Messages,
+    Hospitals,
+    ChooseDoctor,
+    Chatting,
+    UserProfile,
+    UpdateProfile
+};

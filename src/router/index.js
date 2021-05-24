@@ -5,6 +5,7 @@ import {
     Chatting,
     ChooseDoctor,
     Doctor,
+    DoctorProfile,
     GetStarted,
     Hospitals,
     Login,
@@ -32,7 +33,7 @@ const MainApp = () => {
 
 const Router = () => {
     return (
-        <Stack.Navigator initialRouteName="Splash">
+        <Stack.Navigator initialRouteName="MainApp">
             <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }} />
             <Stack.Screen name="GetStarted" component={GetStarted} options={{ headerShown: false }} />
             <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
@@ -43,6 +44,7 @@ const Router = () => {
             <Stack.Screen name="Chatting" component={Chatting} options={{ headerShown: false }} />
             <Stack.Screen name="UserProfile" component={UserProfile} options={{ headerShown: false }} />
             <Stack.Screen name="UpdateProfile" component={UpdateProfile} options={{ headerShown: false }} />
+            <Stack.Screen name="DoctorProfile" component={DoctorProfile} options={{ headerShown: false }} />
         </Stack.Navigator>
     )
 }

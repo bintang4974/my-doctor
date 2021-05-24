@@ -1,8 +1,11 @@
 import { useState } from "react";
 
 export const useForm = (initialValue) => {
-    const [values, setValue] = useState(initialValue);
+    const [values, setValues] = useState(initialValue);
     return [values, (formType, formValue) => {
-        setValue({...values, [formType]: formValue});
+        if(formType === 'reset'){
+            return setValues(initialValue);
+        }
+        setValues({...values, [formType]: formValue});
     }]
 }

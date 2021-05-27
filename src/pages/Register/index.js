@@ -17,7 +17,6 @@ const Register = ({ navigation }) => {
 
     const onContinue = () => {
         console.log(form);
-
         setLoading(true);
         Fire.auth().createUserWithEmailAndPassword(form.email, form.password)
             .then((success) => {
@@ -27,6 +26,7 @@ const Register = ({ navigation }) => {
                     fullName: form.fullName,
                     profession: form.profession,
                     email: form.email,
+                    uid: success.user.uid,
                 };
 
                 Fire.database()
@@ -34,7 +34,7 @@ const Register = ({ navigation }) => {
                     .set(data);
 
                 storeData('user', data);
-                navigation.navigate('UploadPhoto');
+                navigation.navigate('UploadPhoto', data);
                 console.log('register success: ', success);
             })
             .catch((error) => {

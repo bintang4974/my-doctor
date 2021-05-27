@@ -2,21 +2,27 @@ import React, { useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { IconAddPhoto, IconRemovePhoto, ILNullPhoto } from '../../assets';
 import { Button, Gap, Header, Link } from '../../components';
-import { colors, fonts } from '../../utils';
+import { colors, fonts, storeData } from '../../utils';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { showMessage } from 'react-native-flash-message';
+import { Fire } from '../../config';
 
-const UploadPhoto = ({ navigation }) => {
+const UploadPhoto = ({ navigation, route }) => {
+    const { fullName, profession, uid } = route.params;
+    const [photoForDB, setPhotoForDB] = useState('');
     const [hasPhoto, setHasPhoto] = useState(false);
     const [photo, setPhoto] = useState(ILNullPhoto);
 
     const getImage = () => {
         let options = {
+            quality: 0.5,
+            maxWidth: 200,
+            maxHeight: 200,
             storageOption: {
                 path: 'images',
-                mediaType: 'photo'
+                mediaType: 'photo',
             },
-            includeBase64: true
+            includeBase64: true,
         }
 
         launchImageLibrary(options, (response) => {
@@ -29,11 +35,27 @@ const UploadPhoto = ({ navigation }) => {
                     color: colors.white
                 });
             } else {
+                console.log('response getImage: ', response);
+                setPhotoForDB(`data:${response.type};base64, ${response.base64}`);
+
                 const source = { uri: response.uri };
                 setPhoto(source);
                 setHasPhoto(true);
             }
         })
+    }
+
+    const uploadAndContinue = () => {
+        Fire.database()
+            .ref('users/' + uid + '/')
+            .update({ photo: photoForDB });
+
+        const data = route.params;
+        data.photo = photoForDB;
+
+        storeData('user', data);
+
+        navigation.replace('MainApp');
     }
 
     return (
@@ -46,11 +68,11 @@ const UploadPhoto = ({ navigation }) => {
                         {hasPhoto && <IconRemovePhoto style={styles.addPhoto} />}
                         {!hasPhoto && <IconAddPhoto style={styles.addPhoto} />}
                     </TouchableOpacity>
-                    <Text style={styles.name}>Bintang Ramadhan</Text>
-                    <Text style={styles.profession}>Mobile Developer</Text>
+                    <Text style={styles.name}>{fullName}</Text>
+                    <Text style={styles.profession}>{profession}</Text>
                 </View>
                 <View>
-                    <Button disable={!hasPhoto} title="Upload and Continue" onPress={() => navigation.replace('MainApp')} />
+                    <Button disable={!hasPhoto} title="Upload and Continue" onPress={uploadAndContinue} />
                     <Gap height={30} />
                     <Link title="Skip for this" style={styles.link} align="center" size={16} onPress={() => navigation.replace('MainApp')} />
                 </View>

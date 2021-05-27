@@ -1,24 +1,46 @@
-import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
-import { IconAddPhoto, ILNullPhoto } from '../../assets';
+import React, { useState } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { IconAddPhoto, IconRemovePhoto, ILNullPhoto } from '../../assets';
 import { Button, Gap, Header, Link } from '../../components';
 import { colors, fonts } from '../../utils';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 const UploadPhoto = ({ navigation }) => {
+    const [hasPhoto, setHasPhoto] = useState(false);
+    const [photo, setPhoto] = useState(ILNullPhoto);
+
+    const getImage = () => {
+        let options = {
+            storageOption: {
+                path: 'images',
+                mediaType: 'photo'
+            },
+            includeBase64: true
+        }
+
+        launchImageLibrary(options, (response) => {
+            console.log('response:', response);
+            const source = {uri: response.uri};
+            setPhoto(source);
+            setHasPhoto(true);
+        })
+    }
+
     return (
         <View style={styles.page}>
             <Header title="Upload Photo" onPress={() => navigation.goBack()} />
             <View style={styles.content}>
                 <View style={styles.profile}>
-                    <View style={styles.avatarWrapper}>
-                        <Image source={ILNullPhoto} style={styles.avatar} />
-                        <IconAddPhoto style={styles.addPhoto} />
-                    </View>
+                    <TouchableOpacity style={styles.avatarWrapper} onPress={getImage}>
+                        <Image source={photo} style={styles.avatar} />
+                        {hasPhoto && <IconRemovePhoto style={styles.addPhoto} />}
+                        {!hasPhoto && <IconAddPhoto style={styles.addPhoto} />}
+                    </TouchableOpacity>
                     <Text style={styles.name}>Bintang Ramadhan</Text>
                     <Text style={styles.profession}>Mobile Developer</Text>
                 </View>
                 <View>
-                    <Button title="Upload and Continue" onPress={() => navigation.replace('MainApp')} />
+                    <Button disable={!hasPhoto} title="Upload and Continue" onPress={() => navigation.replace('MainApp')} />
                     <Gap height={30} />
                     <Link title="Skip for this" style={styles.link} align="center" size={16} onPress={() => navigation.replace('MainApp')} />
                 </View>
@@ -56,7 +78,8 @@ const styles = StyleSheet.create({
     },
     avatar: {
         width: 110,
-        height: 110
+        height: 110,
+        borderRadius: 110 / 2
     },
     addPhoto: {
         position: 'absolute',

@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { ILNullPhoto } from '../../assets';
 import { Button, Gap, Header, Input, Profile } from '../../components';
-import { colors, getData } from '../../utils';
+import { colors, getData, storeData } from '../../utils';
 import { Fire } from '../../config';
 import { showMessage } from 'react-native-flash-message';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 const UpdateProfile = ({ navigation }) => {
     const [profile, setProfile] = useState({
@@ -14,11 +15,13 @@ const UpdateProfile = ({ navigation }) => {
         photo: ILNullPhoto,
     });
     const [password, setPassword] = useState('');
+    const [photo, setPhoto] = useState(ILNullPhoto);
+    const [photoForDB, setPhotoForDB] = useState('');
 
     useEffect(() => {
         getData('user').then((res) => {
             const data = res;
-            data.photo = { uri: res.photo };
+            setPhoto({ uri: res.photo });
             setProfile(data);
         });
     }, []);
@@ -26,12 +29,14 @@ const UpdateProfile = ({ navigation }) => {
     const update = () => {
         console.log('profile', profile);
         const data = profile;
-        data.photo = profile.photo.uri;
+        data.photo = photoForDB;
+
         Fire.database()
             .ref(`users/${profile.uid}/`)
-            .update(profile)
-            .then((res) => {
-                console.log('success: ', res);
+            .update(data)
+            .then(() => {
+                console.log('success: ', data);
+                storeData('user', data);
             })
             .catch((err) => {
                 console.log('error: ', err);
@@ -40,23 +45,54 @@ const UpdateProfile = ({ navigation }) => {
                     type: 'default',
                     backgroundColor: colors.error,
                     color: colors.white
-                })
+                });
             });
-    }
+    };
 
     const changeText = (key, value) => {
         setProfile({
             ...profile,
             [key]: value,
-        })
-    }
+        });
+    };
+
+    const getImage = () => {
+        let options = {
+            quality: 0.5,
+            maxWidth: 200,
+            maxHeight: 200,
+            storageOption: {
+                path: 'images',
+                mediaType: 'photo',
+            },
+            includeBase64: true,
+        };
+
+        launchImageLibrary(options, (response) => {
+            console.log('response:', response);
+            if (response.didCancel || response.error) {
+                showMessage({
+                    message: 'oops, sepertinya anda tidak memilih foto!',
+                    type: 'default',
+                    backgroundColor: colors.error,
+                    color: colors.white
+                });
+            } else {
+                console.log('response getImage: ', response);
+                setPhotoForDB(`data:${response.type};base64, ${response.base64}`);
+
+                const source = { uri: response.uri };
+                setPhoto(source);
+            };
+        });
+    };
 
     return (
         <View style={styles.page}>
             <Header title="Edit Profile" onPress={() => navigation.goBack()} />
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.content}>
-                    <Profile isRemove photo={profile.photo} />
+                    <Profile isRemove photo={photo} onPress={getImage} />
                     <Gap height={26} />
                     <Input
                         label="Full Name"

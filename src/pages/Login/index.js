@@ -1,11 +1,10 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { showMessage } from 'react-native-flash-message';
 import { useDispatch } from 'react-redux';
 import { ILLogo } from '../../assets';
 import { Button, Gap, Input, Link } from '../../components';
 import { Fire } from '../../config';
-import { colors, fonts, storeData, useForm } from '../../utils';
+import { colors, fonts, showError, storeData, useForm } from '../../utils';
 
 const Login = ({ navigation }) => {
     const [form, setForm] = useForm({
@@ -15,18 +14,15 @@ const Login = ({ navigation }) => {
     const dispatch = useDispatch();
 
     const login = () => {
-        console.log('form: ', form);
         dispatch({ type: 'SET_LOADING', value: true });
         Fire.auth()
             .signInWithEmailAndPassword(form.email, form.password)
             .then((res) => {
-                console.log('success: ', res);
                 dispatch({ type: 'SET_LOADING', value: false });
                 Fire.database()
                     .ref(`users/${res.user.uid}/`)
                     .once('value')
                     .then((resDB) => {
-                        console.log('data user: ', resDB.val());
                         if (resDB.val()) {
                             storeData('user', resDB.val());
                             navigation.replace('MainApp');
@@ -34,15 +30,9 @@ const Login = ({ navigation }) => {
                     })
             })
             .catch((err) => {
-                console.log('error: ', err);
                 dispatch({ type: 'SET_LOADING', value: false });
-                showMessage({
-                    message: err.message,
-                    type: 'default',
-                    backgroundColor: colors.error,
-                    color: colors.white,
-                });
-            })
+                showError(err.message);
+            });
     };
 
     return (

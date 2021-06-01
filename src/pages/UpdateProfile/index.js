@@ -28,6 +28,47 @@ const UpdateProfile = ({ navigation }) => {
 
     const update = () => {
         console.log('profile', profile);
+
+
+        console.log('new Password: ', password);
+
+        if (password.length > 0) {
+            if (password.length < 6) {
+                showMessage({
+                    message: 'Password kurang dari 6 karakter',
+                    type: 'default',
+                    backgroundColor: colors.error,
+                    color: colors.white,
+                });
+            } else {
+                // update password
+                updatePassword();
+                updateProfileData();
+                navigation.replace('MainApp');
+            };
+        } else {
+            updateProfileData();
+            navigation.replace('MainApp');
+        }
+
+    };
+
+    const updatePassword = () => {
+        Fire.auth().onAuthStateChanged((user) => {
+            if (user) {
+                user.updatePassword(password).catch((err) => {
+                    showMessage({
+                        message: err.message,
+                        type: 'default',
+                        backgroundColor: colors.error,
+                        color: colors.white
+                    });
+                });
+            };
+        });
+    }
+
+    const updateProfileData = () => {
         const data = profile;
         data.photo = photoForDB;
 
@@ -47,7 +88,7 @@ const UpdateProfile = ({ navigation }) => {
                     color: colors.white
                 });
             });
-    };
+    }
 
     const changeText = (key, value) => {
         setProfile({
@@ -115,6 +156,8 @@ const UpdateProfile = ({ navigation }) => {
                     <Input
                         label="Password"
                         value={password}
+                        onChangeText={(value) => setPassword(value)}
+                        secureTextEntry
                     />
                     <Gap height={40} />
                     <Button title="Save Profile" onPress={update} />

@@ -7,6 +7,7 @@ import { Fire } from '../../config';
 
 const Doctor = ({ navigation }) => {
     const [news, setNews] = useState([]);
+    const [categoryDoctor, setCategoryDoctor] = useState([]);
 
     useEffect(() => {
         Fire.database()
@@ -16,6 +17,18 @@ const Doctor = ({ navigation }) => {
                 console.log('data: ', res.val());
                 if (res.val()) {
                     setNews(res.val());
+                }
+            }).catch((err) => {
+                showError(err.message);
+            });
+
+        Fire.database()
+            .ref('category_doctor/')
+            .once('value')
+            .then((res) => {
+                console.log('category doctor: ', res.val());
+                if (res.val()) {
+                    setCategoryDoctor(res.val());
                 }
             }).catch((err) => {
                 showError(err.message);
@@ -35,14 +48,12 @@ const Doctor = ({ navigation }) => {
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             <View style={styles.category}>
                                 <Gap width={32} />
-                                {
-                                    JSONCategoryDoctor.data.map(item => {
-                                        return <DoctorCategory
-                                            key={item.id}
-                                            category={item.category}
-                                            onPress={() => navigation.navigate('ChooseDoctor')} />
-                                    })
-                                }
+                                {categoryDoctor.map(item => {
+                                    return <DoctorCategory
+                                        key={item.id}
+                                        category={item.category}
+                                        onPress={() => navigation.navigate('ChooseDoctor')} />
+                                })}
                                 <Gap width={22} />
                             </View>
                         </ScrollView>

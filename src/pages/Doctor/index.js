@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { DoctorCategory, Gap, HomeProfile, NewsItem, RatedDoctor } from '../../components';
-import { colors, fonts, getData, showError } from '../../utils';
-import { DummyDoctor1, DummyDoctor2, DummyDoctor3, JSONCategoryDoctor } from '../../assets';
 import { Fire } from '../../config';
+import { colors, fonts, showError } from '../../utils';
 
 const Doctor = ({ navigation }) => {
     const [news, setNews] = useState([]);
@@ -99,7 +98,7 @@ const Doctor = ({ navigation }) => {
                                     name={doctor.data.fullName}
                                     desc={doctor.data.profession}
                                     avatar={{ uri: doctor.data.photo }}
-                                    onPress={() => navigation.navigate('DoctorProfile')}
+                                    onPress={() => navigation.navigate('DoctorProfile', doctor)}
                                 />
                             )
                         })}

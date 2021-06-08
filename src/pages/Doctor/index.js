@@ -83,7 +83,7 @@ const Doctor = ({ navigation }) => {
                                     return <DoctorCategory
                                         key={item.id}
                                         category={item.category}
-                                        onPress={() => navigation.navigate('ChooseDoctor')} />
+                                        onPress={() => navigation.navigate('ChooseDoctor', item)} />
                                 })}
                                 <Gap width={22} />
                             </View>

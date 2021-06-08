@@ -2,12 +2,11 @@ import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { colors, fonts } from '../../../utils';
 
-const ListHospital = ({ type, name, address, pic }) => {
+const ListHospital = ({ name, address, pic }) => {
     return (
         <View style={styles.container}>
             <Image source={pic} style={styles.picture} />
             <View>
-                <Text style={styles.title}>{type}</Text>
                 <Text style={styles.title}>{name}</Text>
                 <Text style={styles.address}>{address}</Text>
             </View>
@@ -33,7 +32,8 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 16,
         fontFamily: fonts.primary.normal,
-        color: colors.text.primary
+        color: colors.text.primary,
+        maxWidth: '70%'
     },
     address: {
         fontSize: 12,

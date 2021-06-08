@@ -11,7 +11,6 @@ LogBox.ignoreLogs(['Setting a timer']);
 
 const MainApp = () => {
   const stateGlobal = useSelector((state) => state);
-  console.log('state global: ', stateGlobal);
 
   return (
     <>

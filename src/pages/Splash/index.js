@@ -10,7 +10,6 @@ const Splash = ({ navigation }) => {
             setTimeout(() => {
                 if (user) {
                     // user lagi login
-                    console.log('user: ', user);
                     navigation.replace('MainApp');
                 } else {
                     // user logout

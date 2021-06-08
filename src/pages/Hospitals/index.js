@@ -36,6 +36,7 @@ const Hospitals = () => {
                 {hospitals.map((item) => {
                     return (
                         <ListHospital
+                            key={item.id}
                             name={item.title}
                             address={item.address}
                             pic={{uri: item.image}} />

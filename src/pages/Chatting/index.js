@@ -8,13 +8,46 @@ const Chatting = ({ navigation, route }) => {
     const dataDoctor = route.params;
     const [chatContent, setChatContent] = useState('');
     const [user, setUser] = useState({});
+    const [chatData, setChatData] = useState([]);
 
     useEffect(() => {
+        getDataUserFromLocal();
+        const chatID = `${user.uid}_${dataDoctor.data.uid}`
+        const urlFirebase = `chatting/${chatID}/allChat/`
+        Fire.database()
+            .ref(urlFirebase)
+            .on('value', (snapshot) => {
+                if (snapshot.val()) {
+                    const dataSnapshot = snapshot.val();
+                    const allDataChat = [];
+
+                    Object.keys(dataSnapshot).map((key) => {
+                        const dataChat = dataSnapshot[key];
+                        const newDataChat = [];
+
+                        Object.keys(dataChat).map((itemChat) => {
+                            newDataChat.push({
+                                id: itemChat,
+                                data: dataChat[itemChat]
+                            })
+                        })
+
+                        allDataChat.push({
+                            id: key,
+                            data: newDataChat
+                        })
+                    })
+                    console.log('all data chat: ', allDataChat);
+                    setChatData(allDataChat);
+                }
+            })
+    }, [dataDoctor.data.uid, user.uid])
+
+    const getDataUserFromLocal = () => {
         getData('user').then((res) => {
-            console.log('user login: ', res);
             setUser(res);
         })
-    }, [])
+    }
 
     const chatSend = () => {
         console.log('user: ', user);
@@ -30,8 +63,6 @@ const Chatting = ({ navigation, route }) => {
         const chatID = `${user.uid}_${dataDoctor.data.uid}`
 
         const urlFirebase = `chatting/${chatID}/allChat/${setDateChat(today)}`
-        console.log('data untuk dikirim: ', data);
-        console.log('url firebase: ', urlFirebase);
 
         // Kirim ke firebase
         Fire.database()
@@ -55,10 +86,25 @@ const Chatting = ({ navigation, route }) => {
             />
             <View style={styles.content}>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    <Text style={styles.chatDate}>Senin, 21 Maret, 2020</Text>
-                    <ChatItem isMe />
-                    <ChatItem />
-                    <ChatItem isMe />
+                    {
+                        chatData.map((chat) => {
+                            return (
+                                <View key={chat.id}>
+                                    <Text style={styles.chatDate}>{chat.id}</Text>
+                                    {chat.data.map((itemChat) => {
+                                        return (
+                                            <ChatItem
+                                                key={itemChat.id}
+                                                isMe={itemChat.data.sendBy === user.uid}
+                                                text={itemChat.data.chatContent}
+                                                date={itemChat.data.chatTime}
+                                            />
+                                        )
+                                    })}
+                                </View>
+                            )
+                        })
+                    }
                 </ScrollView>
             </View>
             <InputChat
